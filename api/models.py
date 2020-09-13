@@ -27,6 +27,8 @@ def topology():
     if "error" in res:
         return res
 
+    headers = ["name", "host", "path", "publicIP", "interface", "privateIP", "poller", "site"]
+
     # Format file
     all_lines = res["complete"].stdout.decode("utf-8")
     all_lines = all_lines.splitlines()
@@ -34,7 +36,12 @@ def topology():
     for line in all_lines:
         splitted_lines.append(line.split(';'))
 
-    return splitted_lines
+    # Create array which contains for each line a header as key and its corresponding data
+    data_array = []
+    for row in range(len(splitted_lines)):
+        data_array.append(dict(zip(headers, splitted_lines[row])))
+
+    return data_array
 
 
 def switch(poller, host):
