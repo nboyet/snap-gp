@@ -1,9 +1,11 @@
 from app import app
 import models as models
 import json
+from flask_cors import cross_origin
 
 
 @app.route('/topology', methods=["GET"])
+@cross_origin()
 def topology():
     """
     Return a JSON for topology
