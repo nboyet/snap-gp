@@ -1,5 +1,6 @@
 import config as config
 import subprocess
+import csv
 
 
 def run_script(script, *args):
@@ -20,27 +21,15 @@ def run_script(script, *args):
 
 def topology():
     """
-    Run the topology script
-    :return: list of list of str
+    Read a CSV file which contains topology informations
+    :return: list of dict; each key/value corresponding to header/value.
     """
-    res = run_script(config.PATH_TOPOLOGY)
-    if "error" in res:
-        return res
-
     headers = ["name", "host", "path", "publicIP", "interface", "privateIP", "poller", "site"]
-
-    # Format file
-    all_lines = res["complete"].stdout.decode("utf-8")
-    all_lines = all_lines.splitlines()
-    splitted_lines = []
-    for line in all_lines:
-        splitted_lines.append(line.split(';'))
-
-    # Create array which contains for each line a header as key and its corresponding data
     data_array = []
-    for row in range(len(splitted_lines)):
-        data_array.append(dict(zip(headers, splitted_lines[row])))
-
+    with open(config.PATH_TOPOLOGY, newline='') as csv_file:
+        values = csv.reader(csv_file, delimiter=';')
+        for row in values:
+            data_array.append(dict(zip(headers, row)))
     return data_array
 
 
@@ -52,7 +41,6 @@ def switch(poller, host):
     :return: int return code
     """
     res = run_script(config.PATH_SWITCH, poller, host)
-    print(res)
     if "error" in res:
         return res
     return {"code": res["complete"].returncode}
