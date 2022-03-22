@@ -1,11 +1,9 @@
 from app import app
 import models as models
 import json
-from flask_cors import cross_origin
 
 
 @app.route('/topology', methods=["GET"])
-@cross_origin()
 def topology():
     """
     Return a JSON for topology
@@ -13,13 +11,13 @@ def topology():
     return json.dumps(models.topology())
 
 
-@app.route('/switch/<poller>/<host>')
-def switch(poller, host):
+@app.route('/switch/<poller>/<host>', methods=["UPDATE"])
+def switch(poller: str, host: str) -> str:
     """
     Change the host for poller.
     :param poller: str
     :param host: str
-    :return: int - error code. 0 for success
+    :return: str - error code. 0 for success
     """
-    switch = models.switch(poller, host)
-    return json.dumps(switch)
+    _switch = models.switch(poller, host)
+    return json.dumps(_switch)

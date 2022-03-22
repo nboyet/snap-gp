@@ -7,10 +7,10 @@ def run_script(script, *args):
     """
     Run the script in parameters.
     :param script: script path
-    :return: Dictionnary with "complete" and "error" keys as, respectively, a CompletedProcess and an str.
+    :return: Dictionary with "complete" and "error" keys as, respectively, a CompletedProcess and an str.
     error is None or empty if nothing went wrong.
     """
-    res = {"complete": None}
+    res = {"complete": None, "error": None}
     try:
         res["complete"] = subprocess.run([script, *args], capture_output=True, shell=True)
     except Exception as e:
@@ -21,21 +21,20 @@ def run_script(script, *args):
 
 def topology():
     """
-    Read a CSV file which contains topology informations
+    Read a CSV file which contains topology information
     :return: list of dict; each key/value corresponding to header/value.
     """
-    headers = ["name", "host", "path", "publicIP", "interface", "privateIP", "poller", "site"]
     data_array = []
     with open(config.PATH_TOPOLOGY, newline='') as csv_file:
         values = csv.reader(csv_file, delimiter=';')
         for row in values:
-            data_array.append(dict(zip(headers, row)))
+            data_array.append(dict(zip(config.TOPOLOGY_HEADERS, row)))
     return data_array
 
 
 def switch(poller, host):
     """
-    Switch the poller poller to host
+    Switch the poller to the given host
     :param poller: str
     :param host: str
     :return: int return code
