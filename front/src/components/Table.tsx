@@ -2,13 +2,25 @@ import React from "react";
 import DataTable from "react-data-table-component";
 import { getTopology } from "../services";
 import { useAsync } from "react-async-hook";
+import BarLoader from 'react-spinners/BarLoader';
 
-const title = "Topology";
+const customStyles = {
 
+  headCells: {
+    style : {
+      fontSize: "x-large",
+    }
+  },
+  rows: {
+    style: {
+      fontSize: "large",
+    }
+  }
+}
 const columns = [
   {
     id: "name",
-    label: "Container",
+    name: "Container",
     selector: (row: any) => row.name,
     sortable: true,
   },
@@ -63,11 +75,13 @@ function Table() {
 
   return (
     <>
+      {asyncTopology.loading && <BarLoader />}
+      {asyncTopology.error && <p>{asyncTopology.error.toString()}</p>}
       {asyncTopology.result && asyncTopology.result.data && (
         <DataTable
-          title={title}
           data={asyncTopology.result.data}
           columns={columns}
+          customStyles={customStyles}
         />
       )}
     </>

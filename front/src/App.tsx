@@ -3,7 +3,7 @@ import { Navigate, Route, Routes, BrowserRouter } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import { RoutesBase } from "./constants";
-import Home from "./views/Home";
+import Topology from "./views/Topology";
 import Manage from "./components/Manage";
 
 function App() {
@@ -22,9 +22,8 @@ function CreateRoute() {
       <Navbar />
       <Routes>
         {/* add routes with layouts */}
-        <Route path={RoutesBase.HOME} element={<Home />} />
+        <Route path={RoutesBase.HOME} element={<Topology />} />
         <Route path={RoutesBase.MANAGE} element={<Manage />} />
-
         {/* add redirect for first page */}
         <Route path="*" element={<Navigate to={RoutesBase.HOME} replace />} />
       </Routes>
