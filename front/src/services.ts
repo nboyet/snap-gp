@@ -1,9 +1,9 @@
-import axios from 'axios';
-import {API_URL, RoutesAPI} from "./constants";
+import axios from "axios";
+import { API_URL, RoutesAPI } from "./constants";
 
 export const getTopology = () => {
   return new Promise((resolve, reject) => {
-    const url = API_URL + '/' + RoutesAPI.TOPOLOGY;
+    const url = API_URL + RoutesAPI.TOPOLOGY;
     IAxios.get(url)
       .then(async (response) => {
         resolve(response);
@@ -17,9 +17,10 @@ export const getTopology = () => {
 export const IAxios = axios.create({
   baseURL: API_URL,
   headers: {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers":
+      "Origin, X-Requested-With, Content-Type, Accept",
+    "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+    'Content-Type': 'application/json'
   },
-
-  // headers: { 'Content-Type': 'application/json' },
 });
