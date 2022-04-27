@@ -28,7 +28,10 @@ def topology():
     with open(app.config.get('PATH_TOPOLOGY'), newline='') as csv_file:
         values = csv.reader(csv_file, delimiter=';')
         for row in values:
-            data_array.append(dict(zip(app.config.get("TOPOLOGY_HEADERS"), row)))
+            if len(row) == 0:
+                continue
+            zip_key_val = dict(zip(app.config.get("TOPOLOGY_HEADERS"), row[0].split(",")))
+            data_array.append(zip_key_val)
     return data_array
 
 
