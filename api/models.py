@@ -1,6 +1,6 @@
-import config as config
 import subprocess
 import csv
+from app import app
 
 
 def run_script(script, *args):
@@ -25,10 +25,10 @@ def topology():
     :return: list of dict; each key/value corresponding to header/value.
     """
     data_array = []
-    with open(config.PATH_TOPOLOGY, newline='') as csv_file:
+    with open(app.config.get('PATH_TOPOLOGY'), newline='') as csv_file:
         values = csv.reader(csv_file, delimiter=';')
         for row in values:
-            data_array.append(dict(zip(config.TOPOLOGY_HEADERS, row)))
+            data_array.append(dict(zip(app.config.get("TOPOLOGY_HEADERS"), row)))
     return data_array
 
 
@@ -39,7 +39,5 @@ def switch(poller, host):
     :param host: str
     :return: int return code
     """
-    res = run_script(config.PATH_SWITCH, poller, host)
-    if "error" in res:
-        return res
-    return {"code": res["complete"].returncode}
+    res = run_script(app.config.get("PATH_SWITCH"), poller, host)
+    return res if "error" in res else {"code": res["complete"].returncode}
