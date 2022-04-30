@@ -1,44 +1,34 @@
 import React from "react";
 import Host from "./container/Host";
-import { DraggableItemType } from "../constants";
+import { useAsync } from "react-async-hook";
+import { getHosts } from "../services";
+import BarLoader from "react-spinners/BarLoader";
+
+const fetchHosts = async () => getHosts();
 
 export default function Manage() {
-  const test: Array<{
-    host: string;
-    containers: Array<DraggableItemType>;
-  }> = [
-    {
-      host: "host_1",
-      containers: [
-        { id: 1, name: "container_1" },
-        { id: 2, name: "container_2" },
-      ],
-    },
-    {
-      host: "host_2",
-      containers: [
-        {
-          id: 3,
-          name: "container_3",
-        },
-        { id: 4, name: "container_4" },
-      ],
-    },
-  ];
+  const asyncHosts: any = useAsync(fetchHosts, []);
+  const groupName = "switchGroup";
+
   return (
     <>
       <div className="flex flex-row flex-wrap">
-        {test.map((value) => {
-          return (
-            <div className="p-4 xl:w-1/4 md:w-1/2 w-full">
-              <Host
-                groupName={"switchGroup"}
-                host={value.host}
-                containers={value.containers}
-              />
-            </div>
-          );
-        })}
+        {asyncHosts.loading && <BarLoader />}
+        {asyncHosts.error && <span>{asyncHosts.error.toString()}</span>}
+        {asyncHosts.result &&
+          Object.keys(asyncHosts.result.data).map(
+            (key: string) => {
+              return (
+                <div className="p-4 xl:w-1/4 md:w-1/2 w-full">
+                  <Host
+                    groupName={groupName}
+                    host={key}
+                    containers={asyncHosts.result.data[key]}
+                  />
+                </div>
+              );
+            }
+          )}
       </div>
     </>
   );

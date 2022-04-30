@@ -7,6 +7,7 @@ export const RoutesBase = {
 
 export const RoutesAPI = {
   TOPOLOGY: "topology",
+  HOSTS: "hosts",
 };
 
 export interface DraggableItemType {

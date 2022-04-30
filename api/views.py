@@ -1,17 +1,25 @@
-from models import topology, switch
+from models import topology as _topology, switch as _switch, hosts as _hosts
 import json
 from app import app
 
 
 @app.route('/topology', methods=["GET"])
-def topo():
+def topology():
     """
     Return a JSON for topology
     """
-    return json.dumps(topology())
+    return json.dumps(_topology())
 
 
-@app.route('/switch/<poller>/<host>', methods=["UPDATE"])
+@app.route('/hosts', methods=["GET"])
+def hosts():
+    """
+    Give the list of all hosts and their containers
+    """
+    return json.dumps(_hosts())
+
+
+@app.route('/switch/<poller>/<host>', methods=["POST"])
 def switch(poller: str, host: str):
     """
     Change the host for poller.
@@ -19,5 +27,4 @@ def switch(poller: str, host: str):
     :param host: str
     :return: str - error code. 0 for success
     """
-    _switch = switch(poller, host)
-    return json.dumps(_switch)
+    return json.dumps(_switch(poller, host))

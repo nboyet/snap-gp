@@ -35,6 +35,19 @@ def topology():
     return data_array
 
 
+def hosts():
+    """
+    Get all the hosts and their containers from topology
+    """
+    datas = {}
+    id_ = 1
+    for row in topology():
+        host_ = {"id": id_, "name": row["host"]}
+        datas.setdefault(row["name"], []).append(host_)
+        id_ += 1
+    return datas
+
+
 def switch(poller, host):
     """
     Switch the poller to the given host

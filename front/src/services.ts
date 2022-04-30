@@ -14,6 +14,19 @@ export const getTopology = () => {
   });
 };
 
+export const getHosts = () => {
+  return new Promise((resolve, reject) => {
+    const url = API_URL + RoutesAPI.HOSTS;
+    IAxios.get(url)
+      .then(async (response) => {
+        resolve(response);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
+
 export const IAxios = axios.create({
   baseURL: API_URL,
   headers: {
