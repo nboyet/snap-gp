@@ -76,7 +76,7 @@ function Table() {
   return (
     <>
       {asyncTopology.loading && <BarLoader />}
-      {asyncTopology.error && <p>{asyncTopology.error.toString()}</p>}
+      {asyncTopology.error && <p className="text-center">{asyncTopology.error.toString()}</p>}
       {asyncTopology.result && asyncTopology.result.data && (
         <DataTable
           data={asyncTopology.result.data}
