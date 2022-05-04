@@ -1,4 +1,5 @@
 import axios from "axios";
+import urlJoin from "url-join";
 import { API_URL, RoutesAPI } from "./constants";
 
 export const getTopology = () => {
@@ -18,6 +19,18 @@ export const getHosts = () => {
   return new Promise((resolve, reject) => {
     const url = API_URL + RoutesAPI.HOSTS;
     IAxios.get(url)
+      .then(async (response) => {
+        resolve(response);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
+export const switchPoller = (poller: string, host: string) => {
+  return new Promise((resolve, reject) => {
+    const url = urlJoin(API_URL, RoutesAPI.SWITCH, poller, host);
+    IAxios.post(url)
       .then(async (response) => {
         resolve(response);
       })

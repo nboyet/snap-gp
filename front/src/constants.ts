@@ -8,9 +8,14 @@ export const RoutesBase = {
 export const RoutesAPI = {
   TOPOLOGY: "topology",
   HOSTS: "hosts",
+  SWITCH: "switch"
 };
 
 export interface DraggableItemType {
   id: number;
   name: string;
+}
+
+export interface Hosts {
+  [key: string] : Array<DraggableItemType>
 }
