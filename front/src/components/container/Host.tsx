@@ -1,18 +1,52 @@
 import React, { useState } from "react";
-import { ReactSortable } from "react-sortablejs";
+import { ReactSortable, Sortable } from "react-sortablejs";
 import { DraggableItemType } from "../../constants";
 import { switchPoller } from "../../services";
 
+/**
+ * Corresponding to a hosting group.
+ * A host contains a list of container which are draggable.
+ *
+ * @param props
+ *        groupName: all the hosts with the same groupName can exchange their container.
+ *        host: name of the current host
+ *        containers: list of the containers within the host
+ *        setRefresh: When set to true, must refresh the containers in the host
+ * @constructor
+ */
 export default function Host(props: {
   groupName: string;
   host: string;
   containers: Array<DraggableItemType>;
+  setRefresh: (refresh: boolean) => void;
 }) {
-  const { host, containers, groupName } = props;
+  const { host, containers, groupName, setRefresh } = props;
   const [showModal, setShowModal] = React.useState(false);
   const [containersList, setContainersList] = useState(containers ?? []);
   const [messageModal, setMessageModal] = useState(<></>);
   const [error, setError] = useState(false);
+
+  /**
+   * When trying to change host of current container.
+   * If the code in data is different from 0, set message on modal with this code.
+   * If the code is 0, set message on modal with the last host, new host and the container to inform the user of the changement.
+   * @param data fetching datas
+   * @param event contain the container and the new host
+   */
+  function handleSwitching(data: any, event: Sortable.SortableEvent) {
+    if (data["data"]["code"] !== 0) {
+      setError(true);
+      setMessageModal(<p>{`Code ${data["data"]["code"]}`}</p>);
+      return;
+    }
+    setMessageModal(
+      ModalMessage({
+        container: event.item.textContent,
+        lastHost: host,
+        newHost: event.to.id,
+      })
+    );
+  }
 
   return (
     <>
@@ -21,6 +55,7 @@ export default function Host(props: {
         setShowModal={setShowModal}
         message={messageModal}
         error={error}
+        setRefresh={setRefresh}
       />
       <div className="h-full w-full rounded-lg transition duration-300 border-2 border-gray-300 flex flex-col relative overflow-hidden">
         <h1 className="text-4xl text-gray-900 pb-4 mb-4 border-b border-gray-200 leading-none text-center">
@@ -37,21 +72,12 @@ export default function Host(props: {
           className="w-min-full h-min-full"
           onEnd={(event) => {
             setError(false);
+            if (host === event.to.id) {
+              return;
+            }
             switchPoller(event.item.textContent ?? "", event.to.id)
               .then((data: any) => {
-                console.log(data);
-                if (data["data"]["code"] !== 0) {
-                  setError(true);
-                  setMessageModal(<p>{`Code ${data["data"]["code"]}`}</p>);
-                } else {
-                  setMessageModal(
-                    ModalMessage({
-                      container: event.item.textContent,
-                      lastHost: host,
-                      newHost: event.to.id,
-                    })
-                  );
-                }
+                handleSwitching(data, event);
               })
               .catch((error) => {
                 setError(true);
@@ -76,10 +102,11 @@ export default function Host(props: {
 function Modal(props: {
   showModal: boolean;
   setShowModal: (set: boolean) => void;
+  setRefresh: (set: boolean) => void;
   message: JSX.Element;
   error: boolean;
 }) {
-  const { showModal, setShowModal, message, error } = props;
+  const { showModal, setShowModal, setRefresh, message, error } = props;
   return (
     <>
       {showModal ? (
@@ -113,7 +140,10 @@ function Modal(props: {
                   <button
                     className="text-blue-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 hover:bg-blue-500 hover:text-white"
                     type="button"
-                    onClick={() => setShowModal(false)}
+                    onClick={() => {
+                      setShowModal(false);
+                      setRefresh(true);
+                    }}
                   >
                     Close
                   </button>

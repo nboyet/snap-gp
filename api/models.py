@@ -14,7 +14,7 @@ def run_script(script, *args):
     try:
         res["complete"] = subprocess.run([script, *args], capture_output=True, shell=True)
     except Exception as e:
-        res["error"] = e
+        res["error"] = str(e)
     finally:
         return res
 
@@ -42,8 +42,8 @@ def hosts():
     datas = {}
     id_ = 1
     for row in topology():
-        host_ = {"id": id_, "name": row["host"]}
-        datas.setdefault(row["name"], []).append(host_)
+        host_ = {"id": id_, "name": row["name"]}
+        datas.setdefault(row["host"], []).append(host_)
         id_ += 1
     return datas
 
@@ -56,4 +56,5 @@ def switch(poller, host):
     :return: int return code
     """
     res = run_script(app.config.get("PATH_SWITCH"), poller, host)
-    return res if "error" in res else {"code": res["complete"].returncode}
+    proc: subprocess.CompletedProcess = res["complete"]
+    return res if res["error"] else {"code": proc.returncode}
