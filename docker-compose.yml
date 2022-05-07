@@ -1,0 +1,15 @@
+services:
+  front:
+    build:
+      context: ./front/
+      dockerfile: Dockerfile.front
+    container_name: snapgp-frontend
+    ports:
+      - 3000:3000
+  api:
+    build:
+      context: ./api/
+      dockerfile: Dockerfile.api
+    container_name: snapgp-api
+    ports:
+      - 5000:5000

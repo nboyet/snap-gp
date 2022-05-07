@@ -1,0 +1,23 @@
+# syntax=docker/dockerfile:1
+# Parent image
+
+FROM python:3.9
+WORKDIR /app
+
+RUN mkdir ./api
+COPY . ./api/
+RUN pip install -r ./api/requirements.txt
+WORKDIR /app/api
+
+ENV FLASK_APP=app
+ENV FLASK_RUN_HOST=0.0.0.0
+ENV FLASK_ENV=development
+ENV PYTHONPATH "${PYTHONPATH}:/usr/src/app"
+
+# Can either fill here, in api/config.py or delete them and use .env file
+ENV PATH_TOPOLOGY=""
+ENV PATH_SWITCH=""
+
+EXPOSE 5000
+
+CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
