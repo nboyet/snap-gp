@@ -3,6 +3,7 @@ import Host from "./container/Host";
 import { useAsync } from "react-async-hook";
 import { getHosts } from "../services";
 import BarLoader from "react-spinners/BarLoader";
+import ErrorMessage from "./ErrorMessage";
 
 const fetchHosts = async () => getHosts();
 
@@ -26,7 +27,7 @@ export default function Manage() {
     <>
       <div className="flex flex-row flex-wrap">
         {asyncHosts.loading && <BarLoader />}
-        {asyncHosts.error && <span>{asyncHosts.error.toString()}</span>}
+        {asyncHosts.error && <ErrorMessage message={asyncHosts.error.message} />}
         {asyncHosts.result &&
           Object.keys(asyncHosts.result.data).map((key: string) => {
             return (

@@ -3,6 +3,7 @@ import DataTable from "react-data-table-component";
 import { getTopology } from "../services";
 import { useAsync } from "react-async-hook";
 import BarLoader from 'react-spinners/BarLoader';
+import ErrorMessage from "./ErrorMessage";
 
 const customStyles = {
 
@@ -76,7 +77,7 @@ function Table() {
   return (
     <>
       {asyncTopology.loading && <BarLoader />}
-      {asyncTopology.error && <p className="text-center">{asyncTopology.error.toString()}</p>}
+      {asyncTopology.error && <ErrorMessage message={asyncTopology.error.message} />}
       {asyncTopology.result && asyncTopology.result.data && (
         <DataTable
           data={asyncTopology.result.data}
